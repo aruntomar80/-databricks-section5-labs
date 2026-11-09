@@ -1,0 +1,35 @@
+bundle:
+  name: s5_performance_cicd
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Existing Unity Catalog catalog available to your identity.
+    default: workspace
+  namespace:
+    description: Personal lab prefix. Use letters, digits and underscores only.
+    default: s5_arun
+  schema_name:
+    description: Isolated schema selected by each target.
+  slow_threshold:
+    description: Deployment-time reporting threshold in seconds.
+    default: "5.0"
+
+workspace:
+  root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${var.namespace}/${bundle.target}
+
+targets:
+  dev:
+    default: true
+    mode: development
+    variables:
+      schema_name: ${var.namespace}_dev
+  test:
+    variables:
+      schema_name: ${var.namespace}_test
+  prod:
+    # A production-named LAB target, not production deployment mode.
+    variables:
+      schema_name: ${var.namespace}_prod
